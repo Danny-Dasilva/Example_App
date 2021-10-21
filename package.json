@@ -1,11 +1,12 @@
 {
-  "name": "electron-updater-example",
-  "version": "0.8.1",
+  "name": "auto-updating-electron-app",
+  "version": "0.0.1",
   "main": "main.js",
   "description": "electron-updater example project",
-  "author": "Matt Haggard",
+  "author": "Danny-Dasilva",
   "scripts": {
-    "publish": "electron-builder -p always"
+    "publish": "electron-builder -p always",
+    "start": "electron ."
   },
   "devDependencies": {
     "electron": "^14.0.1",
