@@ -26,9 +26,6 @@ jobs:
       - name: bump version
         if: "startsWith(github.event.head_commit.message, 'Release:')"
         run: npm version patch  -m "[RELEASE]"
-      - name: Push git
-        if: "startsWith(github.event.head_commit.message, 'Release:')"
-        run: git push
         working-directory: ./
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
@@ -40,7 +37,10 @@ jobs:
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          release: ${{ startsWith(github.event.head_commit.message, 'Release:') }}
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "true"
           GH_TOKEN:  ${{ secrets.github_token }}
+      - name: Push git
+        if: "startsWith(github.event.head_commit.message, 'Release:')"
+        run: git push
