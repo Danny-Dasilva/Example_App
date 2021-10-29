@@ -1,6 +1,6 @@
 {
   "name": "auto-updating-electron-app",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "main.js",
   "description": "electron-updater example project",
   "author": "Danny-Dasilva",
@@ -18,12 +18,14 @@
     "electron-updater": "^4.3.9"
   },
   "build": {
-    "publish": [{
-      "provider": "github",
-      "owner": "Danny-Dasilva",
-      "repo": "Example_App",
-      "releaseType": "release"
-    }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Danny-Dasilva",
+        "repo": "Example_App",
+        "releaseType": "release"
+      }
+    ],
     "appId": "com.github.Danny-Dasilva.electronupdaterexample",
     "afterSign": "./build/notarize.js",
     "mac": {
