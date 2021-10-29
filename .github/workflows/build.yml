@@ -27,10 +27,10 @@ jobs:
           echo "VERSION=$(node -p "try { require('./package.json').version } catch(e) {}")" >> $GITHUB_ENV
       - name: bump version
         if: "startsWith(github.event.head_commit.message, 'Release:')"
-        run: npm version patch
+        run: npm version patch  -m "[RELEASE] ${VERSION}}"
       - name: Push git
         if: "startsWith(github.event.head_commit.message, 'Release:')"
-        run: git commit -a -m "[RELEASE] ${VERSION}}" && git push
+        run: git push
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
