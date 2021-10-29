@@ -1,6 +1,6 @@
 {
   "name": "auto-updating-electron-app",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "main.js",
   "description": "electron-updater example project",
   "author": "Danny-Dasilva",
