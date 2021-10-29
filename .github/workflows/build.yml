@@ -11,8 +11,8 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v1
-
+      - uses: actions/checkout@v2
+      
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
@@ -21,16 +21,17 @@ jobs:
         run: git config --global user.name 'Danny-Dasilva'
       - name: set email
         run: git config --global user.email 'secrets.EMAIL'
-      - name: Get Package Name
+      - name: Get Package Version
         if: "startsWith(github.event.head_commit.message, 'Release:')"
         run: |
           echo "VERSION=$(node -p "try { require('./package.json').version } catch(e) {}")" >> $GITHUB_ENV
       - name: bump version
         if: "startsWith(github.event.head_commit.message, 'Release:')"
-        run: npm version patch  -m "[RELEASE] ${VERSION}}"
+        run: npm version patch  -m "[RELEASE]"
       - name: Push git
         if: "startsWith(github.event.head_commit.message, 'Release:')"
         run: git push
+        working-directory: ./
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
