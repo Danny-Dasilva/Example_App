@@ -9,7 +9,6 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -18,7 +17,16 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
-
+      - name: Get Package Name
+        if: "startsWith(github.event.head_commit.message, 'Release:')"
+        run: |
+          echo "VERSION=$(node -p "try { require('./package.json').version } catch(e) {}")" >> $GITHUB_ENV
+      - name: bump version
+        if: "startsWith(github.event.head_commit.message, 'Release:')"
+        run: npm version patch
+      - name: Push git
+        if: "startsWith(github.event.head_commit.message, 'Release:')"
+        run: git commit -a -m "[RELEASE] ${VERSION}}" && git push
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:

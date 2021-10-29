@@ -18,7 +18,13 @@
     "electron-updater": "^4.3.9"
   },
   "build": {
-    "appId": "com.github.iffy.electronupdaterexample",
+    "publish": [{
+      "provider": "github",
+      "owner": "Danny-Dasilva",
+      "repo": "Example_App",
+      "releaseType": "release"
+    }],
+    "appId": "com.github.Danny-Dasilva.electronupdaterexample",
     "afterSign": "./build/notarize.js",
     "mac": {
       "category": "your.app.category.type"
