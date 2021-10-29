@@ -42,5 +42,5 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "true"
           GH_TOKEN:  ${{ secrets.github_token }}
       - name: Push git
-        if: "startsWith(github.event.head_commit.message, 'Release:')"
+        if: "startsWith(github.event.head_commit.message, 'Release:') && matrix.os == 'ubuntu-latest'"
         run: git push
