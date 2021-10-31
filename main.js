@@ -3,7 +3,10 @@
 
 const {app, BrowserWindow, Menu} = require('electron');
 const log = require('electron-log');
+const path = require('path')
 const {autoUpdater} = require("electron-updater");
+autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml');
+console.log(path.join(__dirname, 'dev-app-update.yml'))
 
 //-------------------------------------------------------------------
 // Logging
@@ -76,6 +79,8 @@ autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 })
 autoUpdater.on('update-available', (info) => {
+  autoUpdater.downloadUpdate();
+  process.env.APPIMAGE = path.join(__dirname, 'dist', `auto-updating-electron-app-${app.getVersion()}.AppImage`)
   sendStatusToWindow('Update available.');
 })
 autoUpdater.on('update-not-available', (info) => {
@@ -88,6 +93,7 @@ autoUpdater.on('download-progress', (progressObj) => {
   let log_message = "Download speed: " + progressObj.bytesPerSecond;
   log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
   log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  win.webContents.send('download-progress', progressObj.percent)
   sendStatusToWindow(log_message);
 })
 autoUpdater.on('update-downloaded', (info) => {
@@ -116,7 +122,8 @@ app.on('window-all-closed', () => {
 // app quits.
 //-------------------------------------------------------------------
 app.on('ready', function()  {
-  autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.autoDownload = false;
+  autoUpdater.checkForUpdates();
 });
 
 //-------------------------------------------------------------------

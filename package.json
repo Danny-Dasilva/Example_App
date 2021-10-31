@@ -1,16 +1,18 @@
 {
   "name": "auto-updating-electron-app",
-  "version": "0.0.5",
+  "version": "0.0.4",
   "main": "main.js",
   "description": "electron-updater example project",
   "author": "Danny-Dasilva",
   "scripts": {
     "publish": "electron-builder -p always",
-    "start": "electron ."
+    "start": "NODE_ENV=development electron .",
+    "pack": "electron-builder --dir",
+    "build" : "electron-builder build"
   },
   "devDependencies": {
     "electron": "^14.0.1",
-    "electron-builder": "^22.11.7",
+    "electron-builder": "^22.4.1",
     "electron-notarize": "^1.1.1"
   },
   "dependencies": {
