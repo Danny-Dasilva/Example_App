@@ -7,6 +7,7 @@
   "scripts": {
     "publish": "electron-builder -p always",
     "start": "NODE_ENV=development electron .",
+    "build-canary": "build --config electron-builder-canary.yml",
     "pack": "electron-builder --dir",
     "build" : "electron-builder build"
   },
