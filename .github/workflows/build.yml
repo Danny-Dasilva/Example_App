@@ -34,6 +34,9 @@ jobs:
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
           CSC_IDENTITY_AUTO_DISCOVERY: "true"
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
@@ -41,6 +44,8 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "true"
           GH_TOKEN:  ${{ secrets.github_token }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
       - name: Push git
         if:  matrix.os == 'ubuntu-latest'
         run: git push
