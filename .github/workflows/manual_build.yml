@@ -1,0 +1,79 @@
+name: Build/release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseCandidate:
+        description: "Release version"
+        required: true
+        default: "main"
+
+jobs:
+  release:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: set name
+        run: git config --global user.name 'Danny-Dasilva'
+      - name: set email
+        run: git config --global user.email 'secrets.EMAIL'
+      - name: Get Package Version
+        run: |
+          echo "VERSION=$(node -p "try { require('./package.json').version } catch(e) {}")" >> $GITHUB_ENV
+      - name: bump version
+        run: npm version patch  -m "[RELEASE]"
+        working-directory: ./
+      - name: bump version
+        run: |
+          if [[ "${{ github.event.inputs.releaseCandidate }}" == "main" ]]; then
+              npm version patch  -m "[RELEASE]"
+          fi
+          if [[ "${{ github.event.inputs.releaseCandidate }}" == "canary" ]]; then
+               npm version prerelease --preid beta "[Canary]"
+          fi
+      - name: Build/release MAIN Electron app
+        if: ${{ github.event.inputs.releaseCandidate }}" == "main"
+
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.github_token }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+
+
+        env:
+          GH_TOKEN:  ${{ secrets.github_token }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+
+      - name: Build/release Canary Electron app
+        if: ${{ github.event.inputs.releaseCandidate }}" == "canary"
+
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.github_token }}
+          CSC_IDENTITY_AUTO_DISCOVERY: "true"
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "true"
+          GH_TOKEN:  ${{ secrets.github_token }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+
+      - name: Push git
+        if:  matrix.os == 'ubuntu-latest'
+        run: git push
